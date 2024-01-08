@@ -5,10 +5,13 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PosterizationCppLib", "PosterizationCppLib\PosterizationCppLib.vcxproj", "{0DA40CCC-617F-415A-92D8-12890DAD8050}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagePosterization", "ImagePosterization\ImagePosterization.csproj", "{935463C9-D106-484D-8320-54020C1F2747}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImagePosterization", "ImagePosterization\ImagePosterization.csproj", "{935463C9-D106-484D-8320-54020C1F2747}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0DA40CCC-617F-415A-92D8-12890DAD8050} = {0DA40CCC-617F-415A-92D8-12890DAD8050}
+		{236C28DD-4AF0-445A-A264-694C4F046F51} = {236C28DD-4AF0-445A-A264-694C4F046F51}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PosterizationAsmLib", "PosterizationAsmLib\Dll_JA_lab1.vcxproj", "{236C28DD-4AF0-445A-A264-694C4F046F51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,8 +37,8 @@ Global
 		{0DA40CCC-617F-415A-92D8-12890DAD8050}.Release|x86.Build.0 = Release|Win32
 		{935463C9-D106-484D-8320-54020C1F2747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{935463C9-D106-484D-8320-54020C1F2747}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x64.Build.0 = Debug|Any CPU
+		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x64.ActiveCfg = Debug|x64
+		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x64.Build.0 = Debug|x64
 		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{935463C9-D106-484D-8320-54020C1F2747}.Debug|x86.Build.0 = Debug|Any CPU
 		{935463C9-D106-484D-8320-54020C1F2747}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,6 +47,18 @@ Global
 		{935463C9-D106-484D-8320-54020C1F2747}.Release|x64.Build.0 = Release|Any CPU
 		{935463C9-D106-484D-8320-54020C1F2747}.Release|x86.ActiveCfg = Release|Any CPU
 		{935463C9-D106-484D-8320-54020C1F2747}.Release|x86.Build.0 = Release|Any CPU
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|Any CPU.Build.0 = Debug|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|x64.ActiveCfg = Debug|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|x64.Build.0 = Debug|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|x86.ActiveCfg = Debug|Win32
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Debug|x86.Build.0 = Debug|Win32
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|Any CPU.ActiveCfg = Release|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|Any CPU.Build.0 = Release|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|x64.ActiveCfg = Release|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|x64.Build.0 = Release|x64
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|x86.ActiveCfg = Release|Win32
+		{236C28DD-4AF0-445A-A264-694C4F046F51}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

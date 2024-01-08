@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 
 #ifdef POSTERIZATIONCPPLIB_EXPORTS
 #define POSTERIZATIONCPPLIB_API __declspec(dllexport)
@@ -6,5 +7,5 @@
 #define POSTERIZATIONCPPLIB_API __declspec(dllimport)
 #endif
 
-extern "C" POSTERIZATIONCPPLIB_API int posterization_init();
+extern "C" POSTERIZATIONCPPLIB_API void posterize(BYTE* image, int width, int height, int level);
 

@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImagePosterization"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="900" Width="1650">
     <Grid>
-        <Button Content="Click me" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Click="Button_Click"/>
-        <Label x:Name="resultLabel" Content="Label Content" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0"/>
+        <Button Content="Import" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Click="Button_Click"/>
+        <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+            <Image x:Name="importedImage" Height="400" Width="800"/>
+            <Image x:Name="processedImage" Height="400" Width="800"/>
+        </StackPanel>
     </Grid>
 </Window>

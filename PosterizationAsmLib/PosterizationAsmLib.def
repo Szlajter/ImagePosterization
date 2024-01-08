@@ -1,0 +1,2 @@
+LIBRARY PosterizationAsmLib
+EXPORTS posterize
