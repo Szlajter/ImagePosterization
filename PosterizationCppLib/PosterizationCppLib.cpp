@@ -4,18 +4,13 @@
 #include <cmath>
 #include "PosterizationCppLib.h"
 
-void posterize(BYTE* image, int width, int height, int levels) {
+void posterize(BYTE* image, int width, int height, int level) {
+
+    float interval1 = (level - 1) / 255.0;
+    float interval2 = 255.0 / (level - 1);
 
     // Iterate through each pixel in the image
-    for (int i = 0; i < width * height * 4; i += 4) {
-        // For each channel (R, G, B), quantize the color intensity
-        for (int channel = 0; channel < 3; ++channel) {
-            // Calculate the quantized intensity
-            int intensity = image[i + channel];
-            int quantized_intensity = static_cast<int>(std::round((intensity * (levels - 1)) / 255.0));
-
-            // Map the quantized intensity back to the 0-255 range
-            image[i + channel] = static_cast<BYTE>((quantized_intensity * 255) / (levels - 1));
-        }
+    for (int i = 0; i < width * height * 3; i ++) {
+            image[i] = std::round((image[i] * interval1)) * interval2;
     }
 }

@@ -13,18 +13,27 @@ namespace ImagePosterization
 {
     public partial class MainWindow : Window
     {
-       //private const string dllPath = @"E:\Repos\ImagePosterization\x64\Debug\PosterizationCppLib.dll";
-       private const string dllPath = @"E:\Repos\ImagePosterization\x64\Debug\PosterizationAsmLib.dll";
+        private const string asmDllPath = @"E:\Repos\ImagePosterization\x64\Debug\PosterizationAsmLib.dll";
+        private const string cppDllPath = @"E:\Repos\ImagePosterization\x64\Debug\PosterizationCppLib.dll";
 
-        [DllImport(dllPath)]
-        private static extern void posterize(byte[] image, int width, int height, int level);
+        private string selectedImagePath = "";
+        private int posterizationLevel = 2;
+        private int numberOfThreads = 1;
+
+
+        [DllImport(asmDllPath, EntryPoint = "posterize")]
+        private static extern void posterizeASM(byte[] image, int width, int height, int level);
+
+
+        [DllImport(cppDllPath, EntryPoint = "posterize")]
+        private static extern void posterizeCPP(byte[] image, int width, int height, int level);
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Load_Image(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -34,27 +43,58 @@ namespace ImagePosterization
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string selectedImagePath = openFileDialog.FileName;
-                DisplayImage(selectedImagePath);
+                selectedImagePath = openFileDialog.FileName;
+                BitmapImage bitmapImage = new BitmapImage(new Uri(selectedImagePath, UriKind.RelativeOrAbsolute));
+                importedImage.Source = bitmapImage;
             }
         }
 
-        private void DisplayImage(string imagePath)
+        private void Posterize_Image(object sender, RoutedEventArgs e)
         {
-            Bitmap bitmap = new Bitmap(imagePath);
+            if (selectedImagePath == "")
+                return;
+
+            Bitmap bitmap = new Bitmap(selectedImagePath);
 
             // Convert Bitmap to byte array
-            BitmapData bmpData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            BitmapData bmpData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             int bytes = Math.Abs(bmpData.Stride) * bitmap.Height;
             byte[] rgbValues = new byte[bytes];
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
-            // 24 bytes pixels without alpha channel
-            // Call C++ DLL to perform posterization
-            int posterizeLevel = 2;// You can adjust the levels as needed
-            posterize(rgbValues, bitmap.Width, bitmap.Height, posterizeLevel);
+
+            // int stripHeight = bitmap.Height / numberOfThreads;
+
+            //Parallel.For(0, numberOfThreads, i =>
+            //{
+            //    posterize(rgbValues, bitmap.Width, stripHeight * (i+1), posterizationLevel);
+            //});
+
+
+            if (AsmButton.IsChecked == true)
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                posterizeASM(rgbValues, bitmap.Width, bitmap.Height, posterizationLevel);
+
+                stopwatch.Stop();
+
+                timeElapsed_textBox.Text= stopwatch.Elapsed.ToString();
+            }
+            else
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                posterizeCPP(rgbValues, bitmap.Width, bitmap.Height, posterizationLevel);
+
+                stopwatch.Stop();
+
+                timeElapsed_textBox.Text = stopwatch.Elapsed.ToString();
+            }
 
             // Copy the modified byte array back to Bitmap
-                Marshal.Copy(rgbValues, 0, bmpData.Scan0, bytes);
+            Marshal.Copy(rgbValues, 0, bmpData.Scan0, bytes);
             bitmap.UnlockBits(bmpData);
 
             // Display the modified image in WPF Image control
@@ -65,7 +105,27 @@ namespace ImagePosterization
             ms.Seek(0, SeekOrigin.Begin);
             image.StreamSource = ms;
             image.EndInit();
-            importedImage.Source = image;
+            processedImage.Source = image;
+        }
+
+        // Sets relative window's size 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            double screenWidth = SystemParameters.PrimaryScreenWidth;
+            double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+            Width = screenHeight * 1.2;
+            Height = screenHeight * 0.7;
+        }
+
+        private void threadNumber_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            this.numberOfThreads = (int)threadNumber.Value;
+        }
+
+        private void level_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            this.posterizationLevel = (int)level.Value;
         }
     }
 }

@@ -5,12 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImagePosterization"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1650">
-    <Grid>
-        <Button Content="Import" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Click="Button_Click"/>
-        <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
-            <Image x:Name="importedImage" Height="400" Width="800"/>
-            <Image x:Name="processedImage" Height="400" Width="800"/>
+        Title="MainWindow"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5    *"/>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Image x:Name="importedImage" Height="400" Width="800" Grid.Row="0" 
+               HorizontalAlignment="Left"/>
+        <Image x:Name="processedImage" Height="400" Width="800" Grid.Row="0"
+               HorizontalAlignment="Right"/>
+
+
+        <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <StackPanel VerticalAlignment="Center" Margin="0 0 10 0">
+                <Label FontWeight="Bold">Dll:</Label>
+                <RadioButton x:Name="AsmButton" Content="ASM" GroupName="library" Margin="0 0 0 5"/>
+                <RadioButton x:Name="CppButton" Content="C++" GroupName="library" IsChecked="True"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="Load Image" Margin="0 0 0 5" Click="Load_Image"/>
+                <Button Content="Posterize" Click="Posterize_Image"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center">
+                <DockPanel VerticalAlignment="Center"  Margin="10">
+                    <Label DockPanel.Dock="Left" FontWeight="Bold">Threads:</Label>
+                    <TextBox Text="{Binding ElementName=threadNumber, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40"/>
+                    <Slider x:Name="threadNumber" Maximum="64" Minimum="1" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="threadNumber_ValueChanged" />
+                </DockPanel>
+                <DockPanel VerticalAlignment="Center"  Margin="10" >
+                    <Label DockPanel.Dock="Left" FontWeight="Bold">Level:</Label>
+                    <TextBox Text="{Binding ElementName=level, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"  TextAlignment="Right" Width="40" />
+                    <Slider x:Name="level" Maximum="256" Minimum="2" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="level_ValueChanged" />
+                </DockPanel>
+            </StackPanel>
+        </DockPanel>
+
+        <StackPanel HorizontalAlignment="Center" Grid.Row="2">
+            <Label FontWeight="Bold">Time Elapsed:</Label>
+            <TextBox x:Name="timeElapsed_textBox" FontWeight="Bold"/>
         </StackPanel>
     </Grid>
 </Window>
