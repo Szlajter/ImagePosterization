@@ -1,80 +1,68 @@
-
+.data
+    number_of_colors dd 255.0, 255.0, 255.0, 255.0
 .code
 posterize proc
-    mov r10, rdx    ; move width from rdx register
-
-
-    ; filling xmm0 with 255
-    mov     eax, 255         
-    CVTSI2SS xmm0, eax       
-
-    punpckldq xmm0, xmm0
-    punpcklqdq xmm0, xmm0
-
+    movaps xmm0, [number_of_colors]         ; filling xmm0 with 255
 
     ; filling xmm2 with (level-1)
-    mov eax, r9d
-    sub eax, 1
-
-    CVTSI2SS xmm2, eax       
-
-    punpckldq xmm2, xmm2
-    punpcklqdq xmm2, xmm2
-
-
-    ; calculating interval 1
-    movaps xmm3, xmm2 ; moving (level-1)
-    divps xmm3, xmm0  ; (level-1)/255
-
-
-    divps xmm0,xmm2 ; 255 / (level -1)
-
-    ; xmm0 = interval2
-    ; xmm3 = interval1
+    mov eax, r9d                            ; Load the value of r9d (width) into eax
+    sub eax, 1                              ; Subtract 1 from eax (level-1)
+    CVTSI2SS xmm2, eax                      ; Convert eax (level-1) to single-precision and store in xmm2
+    shufps xmm2, xmm2, 0                    ; Replicate the value across xmm2
 
 
 
-    ; Calculate the total number of pixels
-    imul    r10, r8            ; r10 = width * height
-    imul    r10, 3
+    ; calculating interval 1 ((level - 1)/255)
+    movaps xmm3, xmm2                       ; moving xmm2(level-1) to xmm3
+    divps xmm3, xmm0                        ; (level-1)/255
+    
+
+    ; calculating interval2 (255/(level - 1))
+    divps xmm0,xmm2                         ; 255 / (level -1)
+
+
+    ; Calculate the total number of channels
+    mov r10, rdx                            ; move width from rdx register to r10
+    imul    r10, r8                         ; r10 = width * height
+    imul    r10, 4                          ; Multiply by number of channels
 
      ; Main loop for posterization
-    xor     r13, r13            ; r13 = loop counter
-
+    xor     r13, r13                        ; r13 = loop counter
 
 posterization_loop:
+        ; xmm0 = interval2
+        ; xmm3 = interval1
 
         ; filling xmm1 with bytes
-        movzx eax, byte ptr[rcx + r13]
-        pinsrd xmm1, eax, 0
-        movzx eax, byte ptr[rcx + r13 + 1]
-        pinsrd xmm1, eax, 1
-        movzx eax, byte ptr[rcx + r13 + 2]
-        pinsrd xmm1, eax, 2
+        movzx eax, byte ptr[rcx + r13]      ; Load a byte with red channel to eax
+        pinsrd xmm1, eax, 0                 ; Insert the byte into xmm1 at position 0
+        movzx eax, byte ptr[rcx + r13 + 1]  ; Load a byte with green channel to eax
+        pinsrd xmm1, eax, 1                 ; Insert the byte into xmm1 at position 1
+        movzx eax, byte ptr[rcx + r13 + 2]  ; Load a byte with blue channel to eax
+        pinsrd xmm1, eax, 2                 ; Insert the byte into xmm1 at position 2
 
-        ; converting bytes into single-precision floating-points
-        cvtdq2ps xmm1, xmm1
-
-
-        mulps xmm1, xmm3        ; (pixel*interval1)
-        roundps xmm1, xmm1, 0   ; rounding
-        mulps xmm1, xmm0        ; (pixel*interval1)*interval
+        cvtdq2ps xmm1, xmm1                 ; Convert bytes into single-precision floating-points
 
 
+        ;calculating result
+        mulps xmm1, xmm3                    ; (pixel*interval1)
+        roundps xmm1, xmm1, 0               ; rounding
+        mulps xmm1, xmm0                    ; (pixel*interval1)*interval
 
-        cvtps2dq xmm1, xmm1      ; converting single-precision floating-points into integers
 
-        ; extracting calculated pixel and putting it back into bitmap
-        pextrd eax, xmm1, 0
-        mov byte ptr[rcx + r13], al
-        pextrd eax, xmm1, 1
-		mov byte ptr[rcx + r13 + 1], al
-        pextrd eax, xmm1, 2
-		mov byte ptr[rcx + r13 + 2], al
+        cvtps2dq xmm1, xmm1                 ; Convert single-precision floating-points into integers
 
-        add     r13, 3
-        cmp     r13, r10
-        jl      posterization_loop   ; Continue loop if not done
+        ; putting calculated channels back into memory
+        pextrd eax, xmm1, 0                 ; Extract the first integer value from xmm1 to eax
+        mov byte ptr[rcx + r13], al         ; Store the lower 8 bits of eax into the memory
+        pextrd eax, xmm1, 1                 ; Extract the second integer value from xmm1 to eax
+        mov byte ptr[rcx + r13 + 1], al     ; Store the lower 8 bits of eax into the memory at address [rcx + r13 + 1]
+        pextrd eax, xmm1, 2                 ; Extract the third integer value from xmm1 to eax
+        mov byte ptr[rcx + r13 + 2], al     ; Store the lower 8 bits of eax into the memory at address [rcx + r13 + 2]
+
+        add     r13, 4                      ; increment loop counter by 4
+        cmp     r13, r10                    ; check if it's the end   
+        jl      posterization_loop          ; Continue loop if not done
 
 ret
 posterize endp

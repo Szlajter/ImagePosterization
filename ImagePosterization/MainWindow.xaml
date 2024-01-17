@@ -10,13 +10,13 @@
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="5    *"/>
+            <RowDefinition Height="5*"/>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         
         <Image x:Name="importedImage" Height="400" Width="800" Grid.Row="0" 
-               HorizontalAlignment="Left"/>
+               HorizontalAlignment="Left" />
         <Image x:Name="processedImage" Height="400" Width="800" Grid.Row="0"
                HorizontalAlignment="Right"/>
 
@@ -35,7 +35,8 @@
                 <DockPanel VerticalAlignment="Center"  Margin="10">
                     <Label DockPanel.Dock="Left" FontWeight="Bold">Threads:</Label>
                     <TextBox Text="{Binding ElementName=threadNumber, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40"/>
-                    <Slider x:Name="threadNumber" Maximum="64" Minimum="1" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="threadNumber_ValueChanged" />
+                    <Slider x:Name="threadNumber" Maximum="64" Minimum="1" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" 
+                            ValueChanged="threadNumber_ValueChanged"/>
                 </DockPanel>
                 <DockPanel VerticalAlignment="Center"  Margin="10" >
                     <Label DockPanel.Dock="Left" FontWeight="Bold">Level:</Label>
