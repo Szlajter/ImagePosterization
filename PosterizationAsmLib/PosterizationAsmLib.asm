@@ -20,14 +20,11 @@ posterize proc
     ; calculating interval2 (255/(level - 1))
     divps xmm0,xmm2                         ; 255 / (level -1)
 
-
-    ; Calculate the total number of channels
-    mov r10, rdx                            ; move width from rdx register to r10
-    imul    r10, r8                         ; r10 = width * height
-    imul    r10, 4                          ; Multiply by number of channels
+    ;rdx - width - start
+    ; r8 - height - end
 
      ; Main loop for posterization
-    xor     r13, r13                        ; r13 = loop counter
+    mov     r13, rdx                        ; r13 = loop counter (filled with start parameter)
 
 posterization_loop:
         ; xmm0 = interval2
@@ -60,10 +57,10 @@ posterization_loop:
         pextrd eax, xmm1, 2                 ; Extract the third integer value from xmm1 to eax
         mov byte ptr[rcx + r13 + 2], al     ; Store the lower 8 bits of eax into the memory at address [rcx + r13 + 2]
 
-        add     r13, 4                      ; increment loop counter by 4
-        cmp     r13, r10                    ; check if it's the end   
+        add     r13, 3                      ; increment loop counter by 4
+        cmp     r13, r8                     ; check if it's the end   
         jl      posterization_loop          ; Continue loop if not done
 
 ret
 posterize endp
-end
+end 

@@ -7,5 +7,5 @@
 #define POSTERIZATIONCPPLIB_API __declspec(dllimport)
 #endif
 
-extern "C" POSTERIZATIONCPPLIB_API void posterize(BYTE* image, int width, int height, int level);
+extern "C" POSTERIZATIONCPPLIB_API void posterize(BYTE* image, int start, int end, int level);
 

@@ -23,10 +23,10 @@ namespace ImagePosterization
 
 
         [DllImport(asmDllPath, EntryPoint = "posterize")]
-        private static extern void posterizeASM(byte[] image, int width, int height, int level);
+        private static extern void posterizeASM(byte[] image, int start, int end, int level);
 
         [DllImport(cppDllPath, EntryPoint = "posterize")]
-        private static extern void posterizeCPP(byte[] image, int width, int height, int level);
+        private static extern void posterizeCPP(byte[] image, int start, int end, int level);
 
         public MainWindow()
         {
@@ -59,7 +59,7 @@ namespace ImagePosterization
             Bitmap bitmap = new Bitmap(selectedImagePath); 
 
             BitmapData bmpData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-            ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
             int bytes = Math.Abs(bmpData.Stride) * bitmap.Height;
             byte[] rgbaValues = new byte[bytes];
@@ -70,7 +70,13 @@ namespace ImagePosterization
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                posterizeASM(rgbaValues, bitmap.Width, bitmap.Height, posterizationLevel);
+                Parallel.For(0, numberOfThreads, i =>
+                {
+                    int start = i * bytes / numberOfThreads;
+                    int end = (i + 1) * bytes / numberOfThreads;
+
+                    posterizeASM(rgbaValues, start, end, posterizationLevel);
+                });
 
                 stopwatch.Stop();
 
@@ -81,7 +87,13 @@ namespace ImagePosterization
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                posterizeCPP(rgbaValues, bitmap.Width, bitmap.Height, posterizationLevel);
+                Parallel.For(0, numberOfThreads, i =>
+                {
+                    int start = i * bytes / numberOfThreads;
+                    int end = (i + 1) * bytes / numberOfThreads;
+
+                    posterizeCPP(rgbaValues, start, end, posterizationLevel);
+                });
 
                 stopwatch.Stop();
 
