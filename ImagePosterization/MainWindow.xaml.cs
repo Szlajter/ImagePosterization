@@ -93,6 +93,10 @@ namespace ImagePosterization
             stopwatch.Stop();
             timeElapsed_textBox.Text = stopwatch.Elapsed.ToString();
 
+            string trimmedVariable = (stopwatch.Elapsed.ToString()).Substring(6);
+            Clipboard.SetText(trimmedVariable);
+
+
             // Copy the modified byte array back to Bitmap
             Marshal.Copy(rgbValues, 0, bmpData.Scan0, bytes);
             bitmap.UnlockBits(bmpData);

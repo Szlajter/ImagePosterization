@@ -6,4 +6,10 @@
   <ItemGroup>
     <None Include="PosterizationAsmLib.def" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+  </ItemGroup>
 </Project>

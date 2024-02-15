@@ -5,12 +5,10 @@ posterize proc
     movaps xmm0, [number_of_colors]         ; filling xmm0 with 255
 
     ; filling xmm2 with (level-1)
-    mov eax, r9d                            ; Load the value of r9d (width) into eax
+    mov eax, r9d                            ; Load the value of r9d (level) into eax
     sub eax, 1                              ; Subtract 1 from eax (level-1)
-    CVTSI2SS xmm2, eax                      ; Convert eax (level-1) to single-precision and store in xmm2
+    CVTSI2SS xmm2, eax                      ; Convert eax (level-1) to single-precision float and store in xmm2
     shufps xmm2, xmm2, 0                    ; Replicate the value across xmm2
-
-
 
     ; calculating interval 1 ((level - 1)/255)
     movaps xmm3, xmm2                       ; moving xmm2(level-1) to xmm3
@@ -44,7 +42,7 @@ posterization_loop:
         ;calculating result
         mulps xmm1, xmm3                    ; (pixel*interval1)
         roundps xmm1, xmm1, 0               ; rounding
-        mulps xmm1, xmm0                    ; (pixel*interval1)*interval
+        mulps xmm1, xmm0                    ; (pixel*interval2)
 
 
         cvtps2dq xmm1, xmm1                 ; Convert single-precision floating-points into integers

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImagePosterization"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Posteryzacja"
         Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
